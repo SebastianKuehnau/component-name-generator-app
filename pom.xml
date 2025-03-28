@@ -5,20 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- Project from https://start.vaadin.com/project/489a17d2-c22b-4912-9707-6c945a5735f0 -->
     <groupId>com.example.application</groupId>
-    <artifactId>my-name-generator-app</artifactId>
-    <name>my-name-generator-app</name>
+    <artifactId>component-name-generator-app</artifactId>
+    <name>component-name-generator-app</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
         <java.version>21</java.version>
         <vaadin.version>24.7.0</vaadin.version>
+        <spring-ai.version>1.0.0-M6</spring-ai.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.4.4</version>
+        <relativePath/>
     </parent>
 
     <repositories>
@@ -37,6 +39,13 @@
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-bom</artifactId>
                 <version>${vaadin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -88,6 +97,15 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench-junit5</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>in.virit</groupId>
+            <artifactId>viritin</artifactId>
+            <version>2.12.1</version>
         </dependency>
     </dependencies>
 

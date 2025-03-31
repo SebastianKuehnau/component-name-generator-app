@@ -1,5 +1,6 @@
 package com.example.application.component.lottie;
 
+import com.example.application.views.ComponentNameGeneratorView;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
@@ -8,14 +9,20 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.server.VaadinServlet;
 
+import java.util.logging.Logger;
+
 @Tag("dotlottie-wc")
 @NpmPackage(value = "@lottiefiles/dotlottie-wc", version = "0.2.21")
 @JsModule("@lottiefiles/dotlottie-wc/dist/index.js")
 public class LottieComponent extends Component implements ClickNotifier<LottieComponent>, HasSize {
 
+    private static final Logger LOGGER = Logger.getLogger(LottieComponent.class.getName());
+
     // Constructor to initialize the animation
     public LottieComponent(String animationPath, boolean autoplay, boolean loop, String width, String height) {
         var path = VaadinServlet.getCurrent().getServletContext().getContextPath() + animationPath;
+
+        LOGGER.info("LottieComponent path: " + path);
 
         getElement().setAttribute("src", path);
         getElement().setAttribute("autoplay", autoplay);

@@ -1,0 +1,39 @@
+div {
+    padding: 5px;
+    margin: 5px;
+}
+
+.spin-wheel-0 {
+    background-color: #ffc93c;
+    color : #000;
+}
+
+.spin-wheel-1 {
+    background-color: #66bfbf;
+    color : #000;
+}
+
+.spin-wheel-2 {
+    background-color: #a2d5f2;
+    color : #000;
+}
+
+.spin-wheel-3 {
+    background-color: #515070;
+    color : #fff;
+}
+
+.spin-wheel-4 {
+    background-color: #43658b;
+    color : #fff;
+}
+
+.spin-wheel-5 {
+    background-color: #ed6663;
+    color : #fff;
+}
+
+.spin-wheel-6 {
+    background-color: #d54062;
+    color : #fff;
+}

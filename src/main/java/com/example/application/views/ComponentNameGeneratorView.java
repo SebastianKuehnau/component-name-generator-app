@@ -9,7 +9,14 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.DialogVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -32,14 +39,14 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-@Menu(order = 0, title = "Component Name Generator View", icon = LineAwesomeIconUrl.SPINNER_SOLID)
 @Route("")
-@RouteAlias("component-name-generator")
 public class ComponentNameGeneratorView extends SplitLayout {
 
     private static final Logger LOGGER = Logger.getLogger(ComponentNameGeneratorView.class.getName());
     private static final int MAX_SUGGESTIONS = 8;
     private static final int DEFAULT_SUGGESTIONS = 5;
+
+    private static final List<String> CHAR_LIST = List.of("A", "B", "C", "D", "E", "F", "G");
 
     private final ComponentNameService componentNameService;
 
@@ -49,9 +56,6 @@ public class ComponentNameGeneratorView extends SplitLayout {
     private final Button generateButton;
     private final VerticalLayout aiResultList;
     private final Notification successfulNotification;
-
-    // Temporary UI components that change during interaction
-    private Button openSpinWheelButton;
 
     public ComponentNameGeneratorView(ComponentNameService componentNameService) {
         this.componentNameService = componentNameService;
@@ -114,7 +118,7 @@ public class ComponentNameGeneratorView extends SplitLayout {
 
     private void showSuggestionLimitNotification() {
         successfulNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        successfulNotification.setText("If you want more suggestions, please make sure there is a suggestion.");
+        successfulNotification.setText("If you want more suggestions, please make sure you have a new ultra suggestion limit.");
         successfulNotification.setPosition(Notification.Position.MIDDLE);
         successfulNotification.open();
     }
@@ -135,7 +139,7 @@ public class ComponentNameGeneratorView extends SplitLayout {
         var componentNames = componentNameService.getComponentNames(code, amountOfNames.intValue());
         LOGGER.info(componentNames);
         var componentNameList = convertComponentNames(componentNames);
-        LOGGER.info(componentNameList.toString());
+        LOGGER.info(String.valueOf(componentNameList));
 
         if (componentNameList != null && !componentNameList.isEmpty()) {
             displayComponentNames(componentNameList);
@@ -145,36 +149,37 @@ public class ComponentNameGeneratorView extends SplitLayout {
     private void displayComponentNames(List<String> componentNameList) {
         aiResultList.removeAll();
 
+
+
         MarkdownMessage message = new MarkdownMessage("Name Finding Assistant:");
         message.appendMarkdown("Here are some suggestions for component names: ");
         componentNameList.forEach(componentName -> {
-            message.appendMarkdown("\n- ");
-            message.appendMarkdown(componentName);
+            var index = componentNameList.indexOf(componentName);
+            var character  = CHAR_LIST.get(index);
+
+            Div span = new Div(character + " - " + componentName);
+            span.addClassNames("spin-wheel-%d".formatted(index));
+            message.getElement().appendChild(span.getElement());
         });
 
         aiResultList.add(message);
 
-        openSpinWheelButton = new Button("can't make a choice? Click here!",
-                event -> openSpinWheel(componentNameList));
-        openSpinWheelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_CONTRAST);
-
-        aiResultList.add(openSpinWheelButton);
-        aiResultList.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, openSpinWheelButton);
+        openSpinWheel(componentNameList);
     }
 
     private void openSpinWheel(List<String> componentNameList) {
         var spinWheel = createSpinWheel(componentNameList);
         var spinButton = createSpinButton(spinWheel);
 
-        aiResultList.replace(openSpinWheelButton, spinButton);
-        aiResultList.add(spinWheel);
+        aiResultList.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, spinButton);
+        aiResultList.add(spinButton, spinWheel);
     }
 
     private SpinWheel createSpinWheel(List<String> componentNameList) {
         SpinWheel spinWheel = new SpinWheel();
         spinWheel.setWidth(100, Unit.PERCENTAGE);
         spinWheel.setHeight(100, Unit.PERCENTAGE);
-        spinWheel.setItems(componentNameList);
+        spinWheel.setItems(CHAR_LIST.subList(0, componentNameList.size()));
 
         spinWheel.addWheelRestListener(event -> {
             showWinnerNotification(componentNameList, event.getIndex());
@@ -185,19 +190,28 @@ public class ComponentNameGeneratorView extends SplitLayout {
     }
 
     private void showWinnerNotification(List<String> componentNameList, int index) {
-        var winnerNotification = new Notification();
-        winnerNotification.addThemeVariants(
-                NotificationVariant.LUMO_SUCCESS,
-                NotificationVariant.LUMO_CONTRAST
+        var winnerDialog = new Dialog();
+        winnerDialog.addClassNames(LumoUtility.TextColor.PRIMARY_CONTRAST);
+        winnerDialog.setModal(true);
+
+        var cpComponentNameButton = new Button(VaadinIcon.COPY.create()) ;
+        cpComponentNameButton.addThemeVariants(
+                ButtonVariant.LUMO_CONTRAST,
+                ButtonVariant.LUMO_TERTIARY,
+                ButtonVariant.LUMO_LARGE);
+        cpComponentNameButton.addClickListener(
+                e -> {
+                    UI.getCurrent().getPage().executeJs(
+                            "navigator.clipboard.writeText($0);", componentNameList.get(index));
+                    winnerDialog.close();
+                    Notification.show("Component name copied to clipboard.", 3000, Notification.Position.BOTTOM_END);
+                }
         );
-        winnerNotification.setPosition(Notification.Position.MIDDLE);
-
-        var winnerText = new H1("The winner is: " + componentNameList.get(index));
-        winnerText.addClassNames(LumoUtility.TextColor.PRIMARY_CONTRAST);
-
-        winnerNotification.add(winnerText);
-        winnerNotification.setDuration(5000);
-        winnerNotification.open();
+        var winnerText = new H1("The winner is: %s".formatted(componentNameList.get(index)));
+        HorizontalLayout layout = new HorizontalLayout(winnerText, cpComponentNameButton);
+        layout.setPadding(false);
+        winnerDialog.add(layout);
+        winnerDialog.open();
     }
 
     private void triggerConfettiAnimation() {

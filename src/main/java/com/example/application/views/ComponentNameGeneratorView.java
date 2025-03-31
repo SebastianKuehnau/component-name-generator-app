@@ -215,7 +215,7 @@ public class ComponentNameGeneratorView extends SplitLayout {
     }
 
     private void triggerConfettiAnimation() {
-        var confettiComponent = new LottieComponent("/confetti.lottie", true, false, null, null);
+        var confettiComponent = new LottieComponent("/static/confetti.lottie", true, false, null, null);
         UI.getCurrent().add(confettiComponent);
         confettiComponent.makeFullOverlay();
     }

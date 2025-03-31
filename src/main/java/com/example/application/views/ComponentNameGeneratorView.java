@@ -9,13 +9,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -27,17 +23,14 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
-import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Route("")
 public class ComponentNameGeneratorView extends SplitLayout {
@@ -248,6 +241,7 @@ public class ComponentNameGeneratorView extends SplitLayout {
 
     private VerticalLayout createCodeLayout(HorizontalLayout buttonLayout) {
         var codeLayout = new VerticalLayout(codeTextArea, buttonLayout);
+        codeLayout.setFlexGrow(1, codeTextArea);
         codeLayout.setSizeFull();
         return codeLayout;
     }

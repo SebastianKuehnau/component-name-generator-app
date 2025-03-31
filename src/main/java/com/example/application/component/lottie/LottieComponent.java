@@ -1,10 +1,7 @@
 package com.example.application.component.lottie;
 
 import com.example.application.views.ComponentNameGeneratorView;
-import com.vaadin.flow.component.ClickNotifier;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.server.VaadinServlet;
@@ -20,11 +17,13 @@ public class LottieComponent extends Component implements ClickNotifier<LottieCo
 
     // Constructor to initialize the animation
     public LottieComponent(String animationPath, boolean autoplay, boolean loop, String width, String height) {
-        var path = "/component-name-generator-app/"+ animationPath;
-
+        var path = VaadinServlet.getCurrent().getServletContext().getContextPath() + animationPath;
         LOGGER.info("LottieComponent path: " + path);
 
-        getElement().setAttribute("src", path);
+        var path2 = UI.getCurrent().getInternals().getContextRootRelativePath() + animationPath;
+        LOGGER.info("LottieComponent path: " + path2);
+
+        getElement().setAttribute("src", "/component-name-generator-app/" + animationPath);
         getElement().setAttribute("autoplay", autoplay);
         getElement().setAttribute("loop", loop);
         getElement().setAttribute("background", "transparent");

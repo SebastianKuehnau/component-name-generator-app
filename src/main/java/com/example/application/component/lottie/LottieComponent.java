@@ -20,7 +20,7 @@ public class LottieComponent extends Component implements ClickNotifier<LottieCo
 
     // Constructor to initialize the animation
     public LottieComponent(String animationPath, boolean autoplay, boolean loop, String width, String height) {
-        var path = VaadinServlet.getCurrent().getServletContext().getContextPath() + animationPath;
+        var path = "/component-name-generator-app/"+ animationPath;
 
         LOGGER.info("LottieComponent path: " + path);
 

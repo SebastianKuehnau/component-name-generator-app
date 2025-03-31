@@ -21,5 +21,8 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose the port your application runs on (typically 8080 for Spring Boot)
 EXPOSE 8080
 
+# Set JVM options if needed (optional)
+ENV JAVA_OPTS="-Xmx256m -Xms128m"
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
